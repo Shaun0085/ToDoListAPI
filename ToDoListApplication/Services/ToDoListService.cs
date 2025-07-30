@@ -18,17 +18,15 @@ namespace ToDoListApplication.Services
             _logger = logger;
         }
 
-        public async Task<List<ToDoListItemDto>> GetAllItem()
+        public async Task<Result<List<ToDoListItemDto>>> GetAllItem()
         {
             try
             {
                 var entities = await _repository.GetAllItem();
                 if (entities == null)
                 {
-                    _logger.LogWarning("Service: No to-do list items found.");
                     return new List<ToDoListItemDto>();
                 }
-                _logger.LogInformation("Service: Retrieved {Count} to-do list items.", entities.Count);
                 return entities.Select(x => new ToDoListItemDto
                 {
                     ItemId = x.ItemId,
@@ -38,23 +36,20 @@ namespace ToDoListApplication.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Service: Error occurred while retrieving to-do list items.");
-                throw;
+                return Result.Fail<List<ToDoListItemDto>>($"Error: {ex.Message}");
             }
         }
 
         
-        public async Task<ToDoListItemDto?> GetItemById(Guid id)
+        public async Task<Result<ToDoListItemDto?>> GetItemById(Guid id)
         {
             try
             {
                 var entity = await _repository.GetItemById(id);
                 if (entity == null)
                 {
-                    _logger.LogInformation("Service: Unable to find item ID: {id}.", id);
                     return null;
                 }
-                _logger.LogInformation("Service: Item retrieved with item ID: {id}.", id);
                 return new ToDoListItemDto
                 {
                     ItemId = entity.ItemId,
@@ -64,8 +59,7 @@ namespace ToDoListApplication.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Serivce: Error occured while retreiving item with item ID: {id}", id);
-                throw;
+                return Result.Fail<ToDoListItemDto?>($"Error: {ex.Message}");
             }
         }
 
@@ -81,13 +75,11 @@ namespace ToDoListApplication.Services
             try
             {
                 await _repository.AddItem(entity);
-                _logger.LogInformation("Service: Item added successfully.");
                 return Result.Ok(entity.ItemId);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Service: Error occurred while adding new item.");
-                throw;
+                return Result.Fail($"Error: {ex.Message}");
             }
         }
         public async Task<Result> UpdateItem(ToDoListItemDto dto)
@@ -101,27 +93,24 @@ namespace ToDoListApplication.Services
                     IsCompleted = dto.IsCompleted
                 };
                 await _repository.UpdateItem(entity);
-                _logger.LogInformation("Service: Successfully updated item.");
                 return Result.Ok();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Service: Error occured while updating item.");
-                throw;
+                return Result.Fail($"Error: {ex.Message}");
             }
         }
 
-        public async Task DeleteItem(Guid id)
+        public async Task<Result> DeleteItem(Guid id)
         {
             try
             {
                 await _repository.DeleteItem(id);
-                _logger.LogInformation("Service: Sucessfully deleted item with item ID: {itemId}", id);
+                return Result.Ok();
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Service: Error occured while deleteing item with item ID: {itemId}", id);
-                throw;
+                return Result.Fail($"Error: {ex.Message}");
             }
         }
     }
