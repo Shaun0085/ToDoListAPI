@@ -18,7 +18,7 @@ namespace ToDoListApplication.Services
             _logger = logger;
         }
 
-        public async Task<Result<List<ToDoListItemDto>>> GetAllItem()
+        public async Task<List<ToDoListItemDto>> GetAllItem()
         {
             try
             {
@@ -36,12 +36,13 @@ namespace ToDoListApplication.Services
             }
             catch (Exception ex)
             {
-                return Result.Fail<List<ToDoListItemDto>>($"Error: {ex.Message}");
+                _logger.LogError(ex, "Error");
+                throw;
             }
         }
 
         
-        public async Task<Result<ToDoListItemDto?>> GetItemById(Guid id)
+        public async Task<ToDoListItemDto?> GetItemById(Guid id)
         {
             try
             {
@@ -59,7 +60,8 @@ namespace ToDoListApplication.Services
             }
             catch (Exception ex)
             {
-                return Result.Fail<ToDoListItemDto?>($"Error: {ex.Message}");
+                _logger.LogError(ex, "Error");
+                throw;
             }
         }
 
@@ -79,7 +81,8 @@ namespace ToDoListApplication.Services
             }
             catch (Exception ex)
             {
-                return Result.Fail($"Error: {ex.Message}");
+                _logger.LogError(ex, "Error");
+                throw;
             }
         }
         public async Task<Result> UpdateItem(ToDoListItemDto dto)
@@ -97,7 +100,8 @@ namespace ToDoListApplication.Services
             }
             catch (Exception ex)
             {
-                return Result.Fail($"Error: {ex.Message}");
+                _logger.LogError(ex, "Error");
+                throw;
             }
         }
 
@@ -110,7 +114,8 @@ namespace ToDoListApplication.Services
             }
             catch (Exception ex)
             {
-                return Result.Fail($"Error: {ex.Message}");
+                _logger.LogError(ex, "Error");
+                throw;
             }
         }
     }
