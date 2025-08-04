@@ -55,7 +55,7 @@ namespace ToDoListAPI.Controllers.v1
         public async Task<IActionResult> Create([FromBody] CreateToDoCommand request)
             => HandleApiResponse(await _mediator.Send(request));
 
-        [HttpPut("{ItemId}")]
+        [HttpPatch("{ItemId}")]
         public async Task<IActionResult> Update([FromBody] UpdateToDoCommand request)
             => HandleApiResponse(await _mediator.Send(request));
 
